@@ -1,0 +1,17 @@
+{
+  "name": "bd-shop",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "concurrently -n server,client -c blue,green \"npm:dev --workspace server\" \"npm:dev --workspace client\"",
+    "build": "npm run build --workspace server && npm run build --workspace client",
+    "seed": "npm run build --workspace server && node server/dist/seed.js"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}
+
