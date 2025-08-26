@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
+import { ZodError } from 'zod'
 
 export function notFound(_req: Request, res: Response) {
   res.status(404).json({ message: 'Not Found' })
@@ -6,12 +7,28 @@ export function notFound(_req: Request, res: Response) {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function errorHandler(err: any, _req: Request, res: Response, _next: NextFunction) {
-  const status = err.status || 500
-  const message = err.message || 'Internal Server Error'
+  let status = err.status || 500
+  let message = err.message || 'Internal Server Error'
+
+  if (err instanceof ZodError) {
+    status = 400
+    message = 'Validation failed'
+    return res.status(status).json({ message, errors: err.flatten() })
+  }
+
+  // Mongo duplicate key error
+  if (err && (err.code === 11000 || err.code === '11000')) {
+    status = 409
+    const fields = Object.keys(err.keyPattern || err.keyValue || {})
+    message = `Duplicate value for: ${fields.join(', ') || 'unique field'}`
+  }
+
   if (process.env.NODE_ENV !== 'production') {
     // eslint-disable-next-line no-console
     console.error(err)
+    return res.status(status).json({ message, stack: err.stack })
   }
+
   res.status(status).json({ message })
 }
 

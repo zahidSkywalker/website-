@@ -13,7 +13,7 @@ import Cart from './pages/Cart'
 import Checkout from './pages/Checkout'
 import NotFound from './pages/NotFound'
 
-function Home() {
+export function Home() {
   return (
     <div className="space-y-4">
       <h1 className="text-3xl font-bold tracking-tight">Premium Apparel & Shoes</h1>
@@ -27,7 +27,7 @@ function Home() {
   )
 }
 
-function Placeholder({ title }: { title: string }) {
+export function Placeholder({ title }: { title: string }) {
   return <div className="text-gray-500">{title} coming soon…</div>
 }
 

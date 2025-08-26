@@ -18,3 +18,8 @@ body {
 .container-safe {
   @apply container mx-auto px-4;
 }
+
+/* Brand utilities */
+.text-brand { color: rgb(var(--brand)); }
+.bg-brand { background-color: rgb(var(--brand)); }
+.bg-brand-dark { background-color: rgb(21 128 61); }

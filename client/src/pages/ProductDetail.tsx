@@ -16,21 +16,28 @@ export default function ProductDetail() {
     api.get<Product>(`/products/${slug}`).then(r => setProduct(r.data))
   }, [slug])
 
-  if (!product) return <div>Loading…</div>
+  if (!product) return <div className="rounded-xl border p-8 text-center text-gray-600">Loading…</div>
 
   return (
     <div className="grid md:grid-cols-2 gap-8">
       <div className="rounded-xl border aspect-square bg-gray-50" />
-      <div className="space-y-4">
-        <h1 className="text-2xl font-semibold tracking-tight">{product.title}</h1>
-        <div className="text-2xl text-brand font-bold">{formatBDT(product.price.amount)}</div>
-        <p className="text-gray-600">{product.description}</p>
-        <button
-          onClick={() => dispatch(addItem({ productId: product._id, title: product.title, unitPrice: product.price.amount, quantity: 1 }))}
-          className="inline-flex items-center justify-center rounded-md bg-brand px-4 py-2 text-white hover:bg-brand-dark"
-        >
-          Add to cart
-        </button>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-semibold tracking-tight">{product.title}</h1>
+          <div className="mt-2 text-2xl text-brand font-bold">{formatBDT(product.price.amount)}</div>
+        </div>
+        {product.description && (
+          <p className="text-gray-600 leading-relaxed">{product.description}</p>
+        )}
+        <div className="flex flex-col sm:flex-row gap-3">
+          <button
+            onClick={() => dispatch(addItem({ productId: product._id, title: product.title, unitPrice: product.price.amount, quantity: 1 }))}
+            className="inline-flex items-center justify-center rounded-md bg-brand px-4 py-2 text-white hover:bg-brand-dark"
+          >
+            Add to cart
+          </button>
+          <button className="inline-flex items-center justify-center rounded-md border px-4 py-2 hover:bg-gray-50">Buy now</button>
+        </div>
       </div>
     </div>
   )
