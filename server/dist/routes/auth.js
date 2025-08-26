@@ -9,6 +9,7 @@ const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const User_1 = require("../models/User");
 const env_1 = require("../config/env");
+const auth_1 = require("../middleware/auth");
 const router = (0, express_1.Router)();
 const registerSchema = zod_1.z.object({
     name: zod_1.z.string().min(2),
@@ -51,6 +52,12 @@ router.post('/login', async (req, res) => {
 router.post('/logout', (_req, res) => {
     res.clearCookie('token');
     res.status(204).end();
+});
+router.get('/me', auth_1.requireAuth, async (req, res) => {
+    const user = await User_1.User.findById(req.auth.userId).select('name email role createdAt');
+    if (!user)
+        return res.status(404).json({ message: 'User not found' });
+    return res.json({ user });
 });
 exports.default = router;
 //# sourceMappingURL=auth.js.map

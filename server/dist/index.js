@@ -16,6 +16,9 @@ const auth_1 = __importDefault(require("./routes/auth"));
 const products_1 = __importDefault(require("./routes/products"));
 const categories_1 = __importDefault(require("./routes/categories"));
 const orders_1 = __importDefault(require("./routes/orders"));
+const seo_1 = __importDefault(require("./routes/seo"));
+const payments_1 = __importDefault(require("./routes/payments"));
+const errors_1 = require("./middleware/errors");
 const app = (0, express_1.default)();
 app.set('trust proxy', 1);
 app.use((0, helmet_1.default)());
@@ -38,6 +41,10 @@ app.use('/api/auth', auth_1.default);
 app.use('/api/products', products_1.default);
 app.use('/api/categories', categories_1.default);
 app.use('/api/orders', orders_1.default);
+app.use('/api/payments', payments_1.default);
+app.use('/', seo_1.default);
+app.use(errors_1.notFound);
+app.use(errors_1.errorHandler);
 const PORT = env_1.env.port;
 (0, db_1.connectDatabase)()
     .then(() => {
