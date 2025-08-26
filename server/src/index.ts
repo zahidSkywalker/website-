@@ -14,6 +14,7 @@ import orderRoutes from './routes/orders';
 import seoRoutes from './routes/seo';
 import paymentRoutes from './routes/payments';
 import { errorHandler, notFound } from './middleware/errors';
+import { setCsrfToken, verifyCsrf } from './middleware/csrf';
 
 const app = express();
 
@@ -33,6 +34,11 @@ app.use(
     legacyHeaders: false,
   })
 );
+
+// CSRF: set token cookie for all requests
+app.use(setCsrfToken);
+// Verify CSRF for state-changing routes, excluding payment IPN callbacks
+app.use(verifyCsrf([{ pathStartsWith: '/api/payments/ipn' }]));
 
 app.get('/health', (_req: Request, res: Response) => {
   res.json({ ok: true, uptime: process.uptime() });

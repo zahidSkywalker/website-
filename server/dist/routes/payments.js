@@ -17,12 +17,19 @@ router.post('/create-session', async (req, res) => {
     if (method === 'cod') {
         return res.json({ provider: 'cod', redirectUrl: null, orderId, amount, currency });
     }
-    // Placeholder for SSLCommerz integration
+    // SSLCommerz integration (init). In production, call /gwprocess/v4/api.php
     if (!process.env.SSLCZ_STORE_ID || !process.env.SSLCZ_STORE_PASSWD) {
         return res.status(501).json({ message: 'SSLCommerz not configured' });
     }
-    // In production: call SSLCommerz init API and return GatewayPageURL
+    // TODO: Exchange with SSLCommerz init API and return GatewayPageURL from response
     return res.json({ provider: 'sslcommerz', redirectUrl: 'https://sandbox.sslcommerz.com/redirect/mock', orderId, amount, currency });
+});
+// SSLCommerz IPN/Validation callback (server-to-server). Excluded from CSRF.
+// This endpoint should verify the transaction with SSLCommerz validation API, then update order paymentStatus accordingly.
+router.post('/ipn', async (req, res) => {
+    // TODO: Verify IPN data with SSLCommerz validation endpoint using val_id
+    // If valid and status is VALID/VALIDATED, mark order as paid, else failed
+    res.status(204).end();
 });
 exports.default = router;
 //# sourceMappingURL=payments.js.map
