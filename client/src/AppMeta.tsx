@@ -1,5 +1,5 @@
 import { Helmet, HelmetProvider } from 'react-helmet-async'
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
 export default function AppMeta({ children }: { children: ReactNode }) {
   return (

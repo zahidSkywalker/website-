@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const zod_1 = require("zod");
 const Category_1 = require("../models/Category");
+const auth_1 = require("../middleware/auth");
 const router = (0, express_1.Router)();
 router.get('/', async (_req, res) => {
     const items = await Category_1.Category.find().sort('name');
@@ -13,7 +14,7 @@ const schema = zod_1.z.object({
     slug: zod_1.z.string().min(2),
     description: zod_1.z.string().optional(),
 });
-router.post('/', async (req, res) => {
+router.post('/', auth_1.requireAuth, auth_1.requireAdmin, async (req, res) => {
     const parsed = schema.safeParse(req.body);
     if (!parsed.success)
         return res.status(400).json(parsed.error.flatten());

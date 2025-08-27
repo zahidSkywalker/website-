@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const zod_1 = require("zod");
 const Product_1 = require("../models/Product");
+const auth_1 = require("../middleware/auth");
 const router = (0, express_1.Router)();
 // List with filters
 router.get('/', async (req, res) => {
@@ -44,7 +45,7 @@ const productSchema = zod_1.z.object({
     stock: zod_1.z.number().int().nonnegative().default(0),
     isActive: zod_1.z.boolean().default(true),
 });
-router.post('/', async (req, res) => {
+router.post('/', auth_1.requireAuth, auth_1.requireAdmin, async (req, res) => {
     const parsed = productSchema.safeParse(req.body);
     if (!parsed.success)
         return res.status(400).json(parsed.error.flatten());
